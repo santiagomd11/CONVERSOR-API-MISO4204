@@ -8,6 +8,7 @@ import os
 
 from views import (
     ViewRegister,
+    ViewLogin
 )
 
 app = Flask(__name__)
@@ -24,6 +25,9 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 api = Api(app)
 api.add_resource(ViewRegister, "/user-register")
+api.add_resource(ViewLogin, "/login")
+
+jwt = JWTManager(app)
 
 
 if __name__ == "__main__":

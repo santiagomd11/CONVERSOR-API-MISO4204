@@ -1,6 +1,7 @@
 from flask import request
 from flask_restful import Resource
 import hashlib
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 from models import (
     db,
@@ -30,11 +31,41 @@ class ViewRegister(Resource):
             new_user = User(
                 user = user_request,
                 email = email_request,
-                contrasena = password_encrypt,
+                password = password_encrypt,
             )
             db.session.add(new_user)
             db.session.commit()
-            db.session.close()
             return {"message": "User create successful"}, 201
         else:
             return {"message": "User or email already exist"}, 409
+        
+
+class ViewLogin(Resource):
+    def post(self):
+        password_encrypt = hashlib.sha3_512(
+            request.json["password"].encode("utf-8")
+        ).hexdigest()
+
+        user_email_request = request.json["user"]
+
+        query_email = User.query.filter(
+            User.email == user_email_request,
+            User.password == password_encrypt,
+        ).first()
+
+        query_user = User.query.filter(
+            User.user == user_email_request,
+            User.password == password_encrypt,
+        ).first()
+
+        if query_email != None:
+            token_access = create_access_token(identity = query_email.id)
+        elif query_user != None:
+            token_access = create_access_token(identity = query_user.id)
+        else:
+            return {"message": "User not found"}, 404
+
+        return {
+            "message": "Login success",
+            "token": token_access,
+        }, 200
