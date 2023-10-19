@@ -1,31 +1,30 @@
-version: '3.8'
-
+version: '3'
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - my_app_network
+    depends_on:
+      - db
+
   db:
     image: postgres:latest
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: miso4204
-      POSTGRES_DB: miso4204db
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: mydb
+      POSTGRES_USER: trayectosuser
+      POSTGRES_PASSWORD: mystrongpassword
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - my_app_network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@uniandes.edu.co
-      PGADMIN_DEFAULT_PASSWORD: miso4204
-    ports:
-      - "8080:80"
-    depends_on:
-      - db
+networks:
+  my_app_network:
+    driver: bridge
 
-  web:
-    build: .
-    environment:
-      - DATABASE_URL=postgresql://admin:miso4204@db:5432/miso4204db
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-    command: ["/app/wait-for-it.sh", "db:5432", "--", "flask", "run", "--host=0.0.0.0"]
+volumes:
+  pgdata:

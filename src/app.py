@@ -2,23 +2,19 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
-
-from models import db
-import os
+from src import create_app, db
 
 from views import (
     ViewRegister,
     ViewLogin
 )
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+app = create_app('conversor')
 
 app_context = app.app_context()
 app_context.push()
-
-db.init_app(app)
 db.create_all()
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})

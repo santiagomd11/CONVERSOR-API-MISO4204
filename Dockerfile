@@ -1,16 +1,13 @@
-FROM python:3.10-slim
+FROM python:3.8-slim
 
-WORKDIR /app
+WORKDIR /src
 
-COPY . /app
+COPY . /src
 
-COPY wait-for-it.sh /app/wait-for-it.sh
-RUN chmod +x /app/wait-for-it.sh
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-RUN pip install -r requirements.txt
+ENV PYTHONPATH /src
 
 EXPOSE 5000
 
-ENV FLASK_APP=app.py
-
-CMD ["/app/wait-for-it.sh", "db:5432", "--", "flask", "run", "--host=0.0.0.0"]
+CMD ["python", "src/app.py"]
