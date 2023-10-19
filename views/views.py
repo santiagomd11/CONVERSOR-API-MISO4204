@@ -34,6 +34,7 @@ class ViewRegister(Resource):
             )
             db.session.add(new_user)
             db.session.commit()
+            db.session.close()
             return {"message": "User create successful"}, 201
         else:
             return {"message": "User or email already exist"}, 409
