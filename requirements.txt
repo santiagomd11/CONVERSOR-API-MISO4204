@@ -28,3 +28,4 @@ six==1.16.0
 SQLAlchemy==1.4.15
 tomli==2.0.1
 Werkzeug==2.0.1
+psycopg2-binary==2.9.9
