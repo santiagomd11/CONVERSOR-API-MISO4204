@@ -7,6 +7,7 @@ db = SQLAlchemy()
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(128))
+    email = db.Column(db.String(150))
     password = db.Column(db.String(150))
 
 class UserSchema(SQLAlchemyAutoSchema):
