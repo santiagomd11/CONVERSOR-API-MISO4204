@@ -1,0 +1,66 @@
+{
+	"info": {
+		"_postman_id": "db8904c6-7b03-4582-b4ec-b009c72dc94c",
+		"name": "conversion-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30638131"
+	},
+	"item": [
+		{
+			"name": "user-register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\":\"tom-uniandes\",\r\n    \"email\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/user-register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"user-register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-register Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
