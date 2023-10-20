@@ -32,10 +32,119 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "user-create-sucess",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"tom-uniandes\",\r\n    \"email\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/user-register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"user-register"
+							]
+						}
+					},
+					"status": "CREATED",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "38"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 20 Oct 2023 04:11:15 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User create successful\"\n}"
+				},
+				{
+					"name": "user-alredy-exist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"tom-uniandes\",\r\n    \"email\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/user-register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"user-register"
+							]
+						}
+					},
+					"status": "CONFLICT",
+					"code": 409,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "43"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 20 Oct 2023 04:11:49 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User or email already exist\"\n}"
+				}
+			]
 		},
 		{
-			"name": "user-register Copy",
+			"name": "login",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -60,7 +169,116 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "login-success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "303"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 20 Oct 2023 03:58:56 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Login success\",\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5Nzc3NDMzNiwianRpIjoiOGEyYmMyZDAtMTA5Yy00NjhhLWFiZjktMDQ2ZTk4ZjU0MThhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjk3Nzc0MzM2LCJleHAiOjE2OTc3NzUyMzZ9.55gTBujcYwwFLL8_3jj56_epxTpTjLGknoOFSGg_BpM\"\n}"
+				},
+				{
+					"name": "login-user-not-found",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"soyunusuariox\",\r\n    \"password\":\"mipassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"status": "NOT FOUND",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "30"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 20 Oct 2023 04:13:13 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User not found\"\n}"
+				}
+			]
 		}
 	]
 }
