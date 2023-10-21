@@ -7,9 +7,12 @@ from models import (
     db,
     User,
     UserSchema,
+    Task,
+    TaskSchema
 )
 
 user_schema = UserSchema()
+task_schema = TaskSchema()
 
 class ViewRegister(Resource):
     def post(self):
@@ -69,3 +72,9 @@ class ViewLogin(Resource):
             "message": "Login success",
             "token": token_access,
         }, 200
+    
+class ViewTask(Resource):
+    @jwt_required()
+    def get(self, id_task):
+        task = Task.query.get_or_404(id_task)
+        return task_schema.dump(Task.query.get_or_404(task.id))
