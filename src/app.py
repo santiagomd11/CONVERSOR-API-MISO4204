@@ -5,7 +5,8 @@ from src import create_app, db
 
 from views import (
     ViewRegister,
-    ViewLogin
+    ViewLogin,
+    ViewTask
 )
 
 
@@ -20,6 +21,7 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
 api.add_resource(ViewRegister, "/user-register")
 api.add_resource(ViewLogin, "/login")
+api.add_resource(ViewTask, "/task/<int:id_task>")
 
 jwt = JWTManager(app)
 
