@@ -90,3 +90,11 @@ class ViewTask(Resource):
         except Exception as e:
             db.session.rollback()
             return jsonify(error=str(e)), 500
+
+
+class ViewTasks(Resource):
+    @jwt_required()
+    def get(self):
+        current_user_id = get_jwt_identity() 
+        tasks = Task.query.filter_by(user_id=current_user_id).all()  # Filtra todas las tareas por el ID del usuario actual
+        return task_schema.dump(tasks, many=True)
