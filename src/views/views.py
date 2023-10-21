@@ -1,4 +1,5 @@
 from flask import request
+from flask import jsonify
 from flask_restful import Resource
 import hashlib
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -78,3 +79,14 @@ class ViewTask(Resource):
     def get(self, id_task):
         task = Task.query.get_or_404(id_task)
         return task_schema.dump(Task.query.get_or_404(task.id))
+    
+    @jwt_required()
+    def delete(self, id_task):
+        try:
+            task = Task.query.get_or_404(id_task)
+            db.session.delete(task)
+            db.session.commit()
+            return '', 204
+        except Exception as e:
+            db.session.rollback()
+            return jsonify(error=str(e)), 500
