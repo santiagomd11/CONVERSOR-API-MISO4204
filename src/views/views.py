@@ -1,5 +1,6 @@
 from flask import request
 from flask import jsonify
+from flask import current_app
 from flask_restful import Resource
 import hashlib
 from flask import send_file
@@ -22,6 +23,7 @@ from models import (
 
 user_schema = UserSchema()
 task_schema = TaskSchema()
+
 
 class ViewRegister(Resource):
     def post(self):
@@ -107,7 +109,32 @@ class ViewTasks(Resource):
         tasks = Task.query.filter_by(user_id=current_user_id).all()
         return task_schema.dump(tasks, many=True)
     
+import multiprocessing
 
+def convert_video_async(filename, target_format, current_user_id):
+    video = VideoFileClip(filename)
+    original_extension = filename.split('.')[1]
+    converted_file_name = filename.split('.')[0] + '.' + target_format.lower()
+    desktop_path = Path.home()
+
+    converted_file_name = f"converted_file.{target_format.lower()}"
+    converted_file_path = desktop_path / converted_file_name
+
+    video.write_videofile(str(converted_file_path))
+    
+    timestamp = datetime.now()
+    file_status = "processed"
+    conversion_task = ConversionFile(file_name=converted_file_name, timestamp=timestamp, status=file_status)
+    db.session.add(conversion_task)
+    db.session.commit()
+    
+    task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension),
+                converted_file_extension=FileExtensions(target_format.lower()), is_available=True,
+                original_file_url='', converted_file_url='',
+                user_id=current_user_id, conversion_file=conversion_task)
+    db.session.add(task)
+    db.session.commit()
+    
 class ViewUploadAndConvert(Resource):
     @jwt_required()
     def get(self):
@@ -125,29 +152,9 @@ class ViewUploadAndConvert(Resource):
         
         filename = secure_filename(file.filename)
         file.save(filename)
-        
-        video = VideoFileClip(filename)
-        original_extension = file.filename.split('.')[1]
-        converted_file_name = file.filename.split('.')[0] + '.' + target_format.lower()
-        desktop_path = Path.home()
 
+       
+        p = multiprocessing.Process(target=convert_video_async, args=(filename, target_format, current_user_id))
+        p.start()
 
-        converted_file_name = f"converted_file.{target_format.lower()}"
-
-        converted_file_path = desktop_path / converted_file_name
-        video.write_videofile(str(converted_file_path))
-        
-        timestamp = datetime.now()
-        file_status = "processed"
-        conversion_task = ConversionFile(file_name=converted_file_name, timestamp=timestamp, status=file_status)
-        db.session.add(conversion_task)
-        db.session.commit()
-        
-        task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension),
-            converted_file_extension=FileExtensions(target_format.lower()), is_available=True,
-            original_file_url='', converted_file_url='',
-            user_id=current_user_id, conversion_file=conversion_task)
-        db.session.add(task)
-        db.session.commit()
-        
-        return send_file(converted_file_path, as_attachment=True)
+        return {'message': 'La conversión se ha iniciado de manera asíncrona.'}, 200
