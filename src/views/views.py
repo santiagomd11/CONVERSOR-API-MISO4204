@@ -114,10 +114,9 @@ import multiprocessing
 def convert_video_async(filename, target_format, current_user_id):
     video = VideoFileClip(filename)
     original_extension = filename.split('.')[1]
-    converted_file_name = filename.split('.')[0] + '.' + target_format.lower()
+    converted_file_name = filename.split('.')[0] + '_converted' + '.' + target_format.lower()
     desktop_path = Path.home()
 
-    converted_file_name = f"converted_file.{target_format.lower()}"
     converted_file_path = desktop_path / converted_file_name
 
     video.write_videofile(str(converted_file_path))
@@ -128,7 +127,7 @@ def convert_video_async(filename, target_format, current_user_id):
     db.session.add(conversion_task)
     db.session.commit()
     
-    task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension),
+    task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension.lower()),
                 converted_file_extension=FileExtensions(target_format.lower()), is_available=True,
                 original_file_url='', converted_file_url='',
                 user_id=current_user_id, conversion_file=conversion_task)
@@ -158,3 +157,14 @@ class ViewUploadAndConvert(Resource):
         p.start()
 
         return {'message': 'La conversión se ha iniciado de manera asíncrona.'}, 200
+
+
+class ViewDownload(Resource):
+    @jwt_required()
+    def get(self, file_name):
+        desktop_path = Path.home()
+        converted_file_path = desktop_path / file_name
+        try:
+            return send_file(converted_file_path, as_attachment=True)
+        except Exception as e:
+            return {'message': f'Error al obtener el archivo: {e}'}, 500
