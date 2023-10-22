@@ -6,8 +6,11 @@ from src import create_app, db
 from views import (
     ViewRegister,
     ViewLogin,
-    ViewTask
+    ViewTask,
+    ViewUploadAndConvert,
+    ViewTasks
 )
+
 
 
 app = create_app('conversor')
@@ -22,6 +25,8 @@ api = Api(app)
 api.add_resource(ViewRegister, "/user-register")
 api.add_resource(ViewLogin, "/login")
 api.add_resource(ViewTask, "/task/<int:id_task>")
+api.add_resource(ViewTasks, "/tasks")
+api.add_resource(ViewUploadAndConvert, '/upload')
 
 jwt = JWTManager(app)
 

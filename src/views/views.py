@@ -2,14 +2,19 @@ from flask import request
 from flask import jsonify
 from flask_restful import Resource
 import hashlib
+from datetime import datetime
+from moviepy.editor import *
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+import os
 
 from models import (
     db,
     User,
     UserSchema,
     Task,
-    TaskSchema
+    TaskSchema,
+    FileExtensions,
+    ConversionFile
 )
 
 user_schema = UserSchema()
@@ -96,5 +101,33 @@ class ViewTasks(Resource):
     @jwt_required()
     def get(self):
         current_user_id = get_jwt_identity() 
-        tasks = Task.query.filter_by(user_id=current_user_id).all()  # Filtra todas las tareas por el ID del usuario actual
+        tasks = Task.query.filter_by(user_id=current_user_id).all()
         return task_schema.dump(tasks, many=True)
+    
+
+class ViewUploadAndConvert(Resource):
+    @jwt_required()
+    def get(self):
+        auth_token = request.headers.get('Authorization')
+        current_user_id = get_jwt_identity() 
+        if not auth_token:
+            return {'message': 'Token de autenticación inválido'}, 401 
+        
+        file = request.files['file']
+        target_format = request.form['target_format']
+        
+        if target_format.lower() not in [e.value for e in FileExtensions]:
+            return {'message': 'Formato de destino no admitido'}, 400 
+        
+        video = VideoFileClip(file)
+        converted_file_name = file.filename.split('.')[0] + '.' + target_format.lower()
+        user_download_path = os.path.join(os.path.expanduser('~'), 'Downloads', converted_file_name)
+        video.write_videofile(user_download_path)
+        
+        timestamp = datetime.now()
+        file_status = "processed"
+        conversion_task = ConversionFile(user_id=current_user_id, file_name=converted_file_name, timestamp=timestamp, status=file_status)
+        db.session.add(conversion_task)
+        db.session.commit()
+      
+        return {'message': 'Archivo de video convertido y guardado correctamente'}, 200
