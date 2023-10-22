@@ -2,14 +2,22 @@ from flask import request
 from flask import jsonify
 from flask_restful import Resource
 import hashlib
+from flask import send_file
+from pathlib import Path
+from datetime import datetime
+from moviepy.editor import *
+from werkzeug.utils import secure_filename
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+import os
 
 from models import (
     db,
     User,
     UserSchema,
     Task,
-    TaskSchema
+    TaskSchema,
+    FileExtensions,
+    ConversionFile
 )
 
 user_schema = UserSchema()
@@ -90,3 +98,47 @@ class ViewTask(Resource):
         except Exception as e:
             db.session.rollback()
             return jsonify(error=str(e)), 500
+
+
+class ViewTasks(Resource):
+    @jwt_required()
+    def get(self):
+        current_user_id = get_jwt_identity() 
+        tasks = Task.query.filter_by(user_id=current_user_id).all()
+        return task_schema.dump(tasks, many=True)
+    
+
+class ViewUploadAndConvert(Resource):
+    @jwt_required()
+    def get(self):
+        auth_token = request.headers.get('Authorization')
+        current_user_id = get_jwt_identity() 
+        if not auth_token:
+            return {'message': 'Token de autenticación inválido'}, 401 
+        
+        file = request.files['file']
+        target_format = request.form['target_format']
+        
+        if target_format.lower() not in [e.value for e in FileExtensions]:
+            return {'message': 'Formato de destino no admitido'}, 400 
+        
+        
+        filename = secure_filename(file.filename)
+        file.save(filename)
+        
+        video = VideoFileClip(filename)
+        converted_file_name = file.filename.split('.')[0] + '.' + target_format.lower()
+        desktop_path = Path.home()
+
+
+        converted_file_name = f"converted_file.{target_format.lower()}"
+
+        converted_file_path = desktop_path / converted_file_name
+        video.write_videofile(str(converted_file_path))
+        
+        timestamp = datetime.now()
+        file_status = "processed"
+        conversion_task = ConversionFile(file_name=converted_file_name, timestamp=timestamp, status=file_status)
+        db.session.add(conversion_task)
+        db.session.commit()
+        return send_file(converted_file_path, as_attachment=True)
