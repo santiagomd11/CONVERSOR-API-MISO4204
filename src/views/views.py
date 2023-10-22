@@ -129,7 +129,7 @@ def convert_video_async(filename, target_format, current_user_id):
     
     task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension.lower()),
                 converted_file_extension=FileExtensions(target_format.lower()), is_available=True,
-                original_file_url='', converted_file_url='',
+                original_file_url=filename, converted_file_url=converted_file_name,
                 user_id=current_user_id, conversion_file=conversion_task)
     db.session.add(task)
     db.session.commit()
