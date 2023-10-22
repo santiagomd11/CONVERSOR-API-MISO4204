@@ -127,6 +127,7 @@ class ViewUploadAndConvert(Resource):
         file.save(filename)
         
         video = VideoFileClip(filename)
+        original_extension = file.filename.split('.')[1]
         converted_file_name = file.filename.split('.')[0] + '.' + target_format.lower()
         desktop_path = Path.home()
 
@@ -141,4 +142,12 @@ class ViewUploadAndConvert(Resource):
         conversion_task = ConversionFile(file_name=converted_file_name, timestamp=timestamp, status=file_status)
         db.session.add(conversion_task)
         db.session.commit()
+        
+        task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension),
+            converted_file_extension=FileExtensions(target_format.lower()), is_available=True,
+            original_file_url='', converted_file_url='',
+            user_id=current_user_id, conversion_file=conversion_task)
+        db.session.add(task)
+        db.session.commit()
+        
         return send_file(converted_file_path, as_attachment=True)
