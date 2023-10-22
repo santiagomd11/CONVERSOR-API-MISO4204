@@ -8,7 +8,8 @@ from views import (
     ViewLogin,
     ViewTask,
     ViewUploadAndConvert,
-    ViewTasks
+    ViewTasks,
+    ViewDownload
 )
 
 
@@ -27,7 +28,7 @@ api.add_resource(ViewLogin, "/login")
 api.add_resource(ViewTask, "/task/<int:id_task>")
 api.add_resource(ViewTasks, "/tasks")
 api.add_resource(ViewUploadAndConvert, '/upload')
-
+api.add_resource(ViewDownload, '/download/<file_name>')
 jwt = JWTManager(app)
 
 

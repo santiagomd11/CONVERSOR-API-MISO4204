@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "db8904c6-7b03-4582-b4ec-b009c72dc94c",
+		"_postman_id": "b85b7362-14b3-4087-bb13-d0e24bf8b816",
 		"name": "conversion-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30638131"
+		"_exporter_id": "30672875"
 	},
 	"item": [
 		{
@@ -279,6 +279,299 @@
 					"body": "{\n    \"message\": \"User not found\"\n}"
 				}
 			]
+		},
+		{
+			"name": "tasks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5Nzk4OTA1MywianRpIjoiN2E2MmY2NzAtZjBhNi00NDY2LWI4MTItZDc1YjViZDRiNzA1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MiwibmJmIjoxNjk3OTg5MDUzLCJleHAiOjE2OTc5ODk5NTN9.ryr7-usQugTrniX0_t7wfUwhU7WGGhtN7WOEAK-PPvo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/tasks",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"tasks"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "tasks-success-empty",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/tasks",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 22 Oct 2023 15:38:38 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "[]"
+				},
+				{
+					"name": "tasks-sucess-results",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/tasks",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "241"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 22 Oct 2023 18:27:34 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"original_file_url\": \"\",\n        \"converted_file_url\": \"\",\n        \"user\": 2,\n        \"converted_file_extension\": \"webm\",\n        \"conversion_file\": 6,\n        \"original_file_extension\": \"FileExtensions.MP4\",\n        \"id\": \"5\",\n        \"original_file_name\": \"prueba.mp4\",\n        \"is_available\": true\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "upload",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5Nzk5NDMzNywianRpIjoiMDI3ZjM1NTMtNDBmMy00YWVlLTg5NDAtMDYxNTY2ZGQ1ODYxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MiwibmJmIjoxNjk3OTk0MzM3LCJleHAiOjE2OTc5OTUyMzd9.Skda7D_39fiZdKDHJR23gXGrAI50gBtgG8ULstRsONk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "target_format",
+							"value": "webm",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/sjare/Videos/Captures/prueba.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/upload",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "upload-success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "target_format",
+									"value": "webm",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/sjare/Videos/Captures/prueba.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/upload",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"upload"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "75"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 22 Oct 2023 19:05:54 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"La conversión se ha iniciado de manera asíncrona.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "download",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5Nzk5NDMzNywianRpIjoiMDI3ZjM1NTMtNDBmMy00YWVlLTg5NDAtMDYxNTY2ZGQ1ODYxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MiwibmJmIjoxNjk3OTk0MzM3LCJleHAiOjE2OTc5OTUyMzd9.Skda7D_39fiZdKDHJR23gXGrAI50gBtgG8ULstRsONk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "target_format",
+							"value": "webm",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/sjare/Videos/Captures/prueba.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/upload",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
