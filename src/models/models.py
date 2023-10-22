@@ -11,6 +11,7 @@ class User(db.Model):
     user = db.Column(db.String(128))
     email = db.Column(db.String(150))
     password = db.Column(db.String(150))
+    tasks = db.relationship('Task', backref='user', lazy=True)
     
     
 class FileExtensions(Enum):
@@ -28,6 +29,7 @@ class Task(db.Model):
     is_available =  db.Column(db.Boolean)
     original_file_url = db.Column(db.String(2000))
     converted_file_url = db.Column(db.String(2000))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
 class ConversionFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)

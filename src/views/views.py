@@ -2,8 +2,11 @@ from flask import request
 from flask import jsonify
 from flask_restful import Resource
 import hashlib
+from flask import send_file
+from pathlib import Path
 from datetime import datetime
 from moviepy.editor import *
+from werkzeug.utils import secure_filename
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import os
 
@@ -119,15 +122,23 @@ class ViewUploadAndConvert(Resource):
         if target_format.lower() not in [e.value for e in FileExtensions]:
             return {'message': 'Formato de destino no admitido'}, 400 
         
-        video = VideoFileClip(file)
+        
+        filename = secure_filename(file.filename)
+        file.save(filename)
+        
+        video = VideoFileClip(filename)
         converted_file_name = file.filename.split('.')[0] + '.' + target_format.lower()
-        user_download_path = os.path.join(os.path.expanduser('~'), 'Downloads', converted_file_name)
-        video.write_videofile(user_download_path)
+        desktop_path = Path.home()
+
+
+        converted_file_name = f"converted_file.{target_format.lower()}"
+
+        converted_file_path = desktop_path / converted_file_name
+        video.write_videofile(str(converted_file_path))
         
         timestamp = datetime.now()
         file_status = "processed"
-        conversion_task = ConversionFile(user_id=current_user_id, file_name=converted_file_name, timestamp=timestamp, status=file_status)
+        conversion_task = ConversionFile(file_name=converted_file_name, timestamp=timestamp, status=file_status)
         db.session.add(conversion_task)
         db.session.commit()
-      
-        return {'message': 'Archivo de video convertido y guardado correctamente'}, 200
+        return send_file(converted_file_path, as_attachment=True)
