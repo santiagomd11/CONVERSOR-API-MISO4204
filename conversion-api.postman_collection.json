@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e69500a0-911a-4731-bb93-1ef98ec8916d",
+		"_postman_id": "e9b051f5-66a6-4981-bb68-990ead990f1c",
 		"name": "conversion-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "26780575"
@@ -145,6 +145,18 @@
 		},
 		{
 			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"bearerToken\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -387,7 +399,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5Nzk4OTA1MywianRpIjoiN2E2MmY2NzAtZjBhNi00NDY2LWI4MTItZDc1YjViZDRiNzA1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MiwibmJmIjoxNjk3OTg5MDUzLCJleHAiOjE2OTc5ODk5NTN9.ryr7-usQugTrniX0_t7wfUwhU7WGGhtN7WOEAK-PPvo",
+							"value": "{{bearerToken}}",
 							"type": "string"
 						}
 					]
@@ -519,7 +531,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5Nzk5NDMzNywianRpIjoiMDI3ZjM1NTMtNDBmMy00YWVlLTg5NDAtMDYxNTY2ZGQ1ODYxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MiwibmJmIjoxNjk3OTk0MzM3LCJleHAiOjE2OTc5OTUyMzd9.Skda7D_39fiZdKDHJR23gXGrAI50gBtgG8ULstRsONk",
+							"value": "{{bearerToken}}",
 							"type": "string"
 						}
 					]
@@ -528,21 +540,10 @@
 				"header": [],
 				"body": {
 					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "target_format",
-							"value": "webm",
-							"type": "text"
-						},
-						{
-							"key": "file",
-							"type": "file",
-							"src": "/C:/Users/sjare/Videos/Captures/prueba.mp4"
-						}
-					]
+					"formdata": []
 				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/upload",
+					"raw": "http://127.0.0.1:5000/download/prueba_converted.webm",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -552,11 +553,56 @@
 					],
 					"port": "5000",
 					"path": [
-						"upload"
+						"download",
+						"prueba_converted.webm"
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "download",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "target_format",
+									"value": "webm",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/sjare/Videos/Captures/prueba.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/download/prueba_converted.webm",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"download",
+								"prueba_converted.webm"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
 		},
 		{
 			"name": "get-task",
@@ -644,8 +690,33 @@
 		{
 			"name": "delete-task",
 			"request": {
-				"method": "GET",
-				"header": []
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/task/2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"task",
+						"2"
+					]
+				}
 			},
 			"response": [
 				{
@@ -691,7 +762,7 @@
 						}
 					],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		}
