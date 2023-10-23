@@ -1,0 +1,763 @@
+{
+	"info": {
+		"_postman_id": "7361925a-d343-47b6-abda-87928f9fedcf",
+		"name": "conversion-api",
+		"description": "Esta es la colección de postman para la API de conversión donde se muestra cada uno de los endpoints expuestos, los cuales permiten cambiar a los formatos MP4 - WEBM - AVI - MPEG – WMV\n\nMISO\n\nGrupo 14\n\nVictor Santiago Montaño Díaz\n\nTomas Octavio Rodriguez Herrera\n\nSteven Javier Arévalo Poveda\n\nCamilo Cortez",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30638131"
+	},
+	"item": [
+		{
+			"name": "user-register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\":\"tom-uniandes\",\r\n    \"email\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/user-register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"user-register"
+					]
+				},
+				"description": "En este enpoint se hace el registro de un usuario a la aplicación, ingresando user, email y su respectiva password. Es importante tener en cuenta que el registro será existoso si y solo si el user ni el email no se encuentran registrados."
+			},
+			"response": [
+				{
+					"name": "user-create-sucess",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"tom-uniandes\",\r\n    \"email\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/user-register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"user-register"
+							]
+						}
+					},
+					"status": "CREATED",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "38"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 20 Oct 2023 04:11:15 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User create successful\"\n}"
+				},
+				{
+					"name": "user-alredy-exist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"tom-uniandes\",\r\n    \"email\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/user-register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"user-register"
+							]
+						}
+					},
+					"status": "CONFLICT",
+					"code": 409,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "43"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 20 Oct 2023 04:11:49 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User or email already exist\"\n}"
+				}
+			]
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"bearerToken\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"login"
+					]
+				},
+				"description": "Este endpoint hace el proceso de inicio de sesión recibiendo las credenciales del usuario y devuelve el token que le va a permitir autenticarse en los demás servicios ofrecidos por el API de conversión."
+			},
+			"response": [
+				{
+					"name": "login-success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"t.rodriguezh@uniandes.edu.co\",\r\n    \"password\":\"miso\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "303"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 20 Oct 2023 03:58:56 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Login success\",\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5Nzc3NDMzNiwianRpIjoiOGEyYmMyZDAtMTA5Yy00NjhhLWFiZjktMDQ2ZTk4ZjU0MThhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjk3Nzc0MzM2LCJleHAiOjE2OTc3NzUyMzZ9.55gTBujcYwwFLL8_3jj56_epxTpTjLGknoOFSGg_BpM\"\n}"
+				},
+				{
+					"name": "login-user-not-found",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"soyunusuariox\",\r\n    \"password\":\"mipassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"status": "NOT FOUND",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "30"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 20 Oct 2023 04:13:13 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User not found\"\n}"
+				}
+			]
+		},
+		{
+			"name": "upload",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "target_format",
+							"value": "webm",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/sjare/Videos/Captures/prueba.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/upload",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"upload"
+					]
+				},
+				"description": "En este endpoint se carga el archivo que será puesto en la cola para la conversión."
+			},
+			"response": [
+				{
+					"name": "upload-success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/upload",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"upload"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "75"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 22 Oct 2023 19:05:54 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"La conversión se ha iniciado de manera asíncrona.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "tasks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/tasks",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"tasks"
+					]
+				},
+				"description": "En este enpoint se obtiene la información de todas las tareas de conversión."
+			},
+			"response": [
+				{
+					"name": "tasks-success-empty",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/tasks",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 22 Oct 2023 15:38:38 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "[]"
+				},
+				{
+					"name": "tasks-sucess-results",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/tasks",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "241"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 22 Oct 2023 18:27:34 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"original_file_url\": \"\",\n        \"converted_file_url\": \"\",\n        \"user\": 2,\n        \"converted_file_extension\": \"webm\",\n        \"conversion_file\": 6,\n        \"original_file_extension\": \"FileExtensions.MP4\",\n        \"id\": \"5\",\n        \"original_file_name\": \"prueba.mp4\",\n        \"is_available\": true\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "download",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/download/prueba_converted.webm",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"download",
+						"prueba_converted.webm"
+					]
+				},
+				"description": "En este enpoint se obtiene el archivo convertido al formato indicado y estará disponible una vez ha terminado de procesarse su conversión."
+			},
+			"response": [
+				{
+					"name": "download",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/download/prueba_converted.webm",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"download",
+								"prueba_converted.webm"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "get-task",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/task/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"task",
+						"1"
+					]
+				},
+				"description": "En este enpoint se obtiene información de una tarea específica, la cual es indicada de acuerda al id de la tarea a consultar."
+			},
+			"response": [
+				{
+					"name": "get-task-by-id",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/task/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"task",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "255"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 22 Oct 2023 22:37:24 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"original_file_extension\": \"mp4\",\n    \"is_available\": true,\n    \"conversion_file\": 1,\n    \"original_file_url\": \"prueba.mp4\",\n    \"user\": 1,\n    \"original_file_name\": \"prueba.mp4\",\n    \"converted_file_extension\": \"webm\",\n    \"id\": \"1\",\n    \"converted_file_url\": \"prueba_converted.webm\"\n}"
+				}
+			]
+		},
+		{
+			"name": "delete-task",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/task/2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"task",
+						"2"
+					]
+				},
+				"description": "En este enpoint se elimina una tarea específica de acuerdo con el id indicado."
+			},
+			"response": [
+				{
+					"name": "delete-task-by -id",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/task/2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"task",
+								"2"
+							]
+						}
+					},
+					"status": "NO CONTENT",
+					"code": 204,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.1 Python/3.8.18"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 22 Oct 2023 22:38:10 GMT"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		}
+	]
+}
