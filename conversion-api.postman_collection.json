@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "e9b051f5-66a6-4981-bb68-990ead990f1c",
+		"_postman_id": "7361925a-d343-47b6-abda-87928f9fedcf",
 		"name": "conversion-api",
+		"description": "Esta es la colección de postman para la API de conversión donde se muestra cada uno de los endpoints expuestos, los cuales permiten cambiar a los formatos MP4 - WEBM - AVI - MPEG – WMV\n\nMISO\n\nGrupo 14\n\nVictor Santiago Montaño Díaz\n\nTomas Octavio Rodriguez Herrera\n\nSteven Javier Arévalo Poveda\n\nCamilo Cortez",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26780575"
+		"_exporter_id": "30638131"
 	},
 	"item": [
 		{
@@ -30,7 +31,8 @@
 					"path": [
 						"user-register"
 					]
-				}
+				},
+				"description": "En este enpoint se hace el registro de un usuario a la aplicación, ingresando user, email y su respectiva password. Es importante tener en cuenta que el registro será existoso si y solo si el user ni el email no se encuentran registrados."
 			},
 			"response": [
 				{
@@ -179,7 +181,8 @@
 					"path": [
 						"login"
 					]
-				}
+				},
+				"description": "Este endpoint hace el proceso de inicio de sesión recibiendo las credenciales del usuario y devuelve el token que le va a permitir autenticarse en los demás servicios ofrecidos por el API de conversión."
 			},
 			"response": [
 				{
@@ -338,7 +341,8 @@
 					"path": [
 						"upload"
 					]
-				}
+				},
+				"description": "En este endpoint se carga el archivo que será puesto en la cola para la conversión."
 			},
 			"response": [
 				{
@@ -419,7 +423,8 @@
 					"path": [
 						"tasks"
 					]
-				}
+				},
+				"description": "En este enpoint se obtiene la información de todas las tareas de conversión."
 			},
 			"response": [
 				{
@@ -556,7 +561,8 @@
 						"download",
 						"prueba_converted.webm"
 					]
-				}
+				},
+				"description": "En este enpoint se obtiene el archivo convertido al formato indicado y estará disponible una vez ha terminado de procesarse su conversión."
 			},
 			"response": [
 				{
@@ -564,21 +570,6 @@
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "target_format",
-									"value": "webm",
-									"type": "text"
-								},
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/C:/Users/sjare/Videos/Captures/prueba.mp4"
-								}
-							]
-						},
 						"url": {
 							"raw": "http://127.0.0.1:5000/download/prueba_converted.webm",
 							"protocol": "http",
@@ -597,10 +588,10 @@
 					},
 					"status": "OK",
 					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": null,
+					"_postman_previewlanguage": "Text",
+					"header": [],
 					"cookie": [],
-					"body": null
+					"body": ""
 				}
 			]
 		},
@@ -633,7 +624,8 @@
 						"task",
 						"1"
 					]
-				}
+				},
+				"description": "En este enpoint se obtiene información de una tarea específica, la cual es indicada de acuerda al id de la tarea a consultar."
 			},
 			"response": [
 				{
@@ -716,7 +708,8 @@
 						"task",
 						"2"
 					]
-				}
+				},
+				"description": "En este enpoint se elimina una tarea específica de acuerdo con el id indicado."
 			},
 			"response": [
 				{
