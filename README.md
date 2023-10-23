@@ -16,3 +16,14 @@
     ```bash
      docker compose start
     ```
+
+## Pgadmin credentials
+
+* user: ``admin@uniandes.edu.co``
+* password: ``miso4204``
+
+
+## Postgres credentials
+
+* user: ``admin``
+* password: ``miso4204``
