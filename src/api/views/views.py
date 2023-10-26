@@ -165,7 +165,8 @@ class ViewUploadAndConvert(Resource):
         filename = secure_filename(file.filename)
         file.save(filename)
 
-        convert_video_async(filename, target_format, current_user_id)
+        p = multiprocessing.Process(target=convert_video_async, args=(filename, target_format, current_user_id))
+        p.start()
 
         return {'message': 'La conversión se ha iniciado de manera asíncrona.'}, 200
 
