@@ -24,6 +24,8 @@ services:
     environment: 
     - CELERY_BROKER_URL=pyamqp://guest:guest@rabbitmq//
     - CELERY_RESULT_BACKEND=rpc://rabbitmq
+    networks:
+      - my_app_network
 
   rabbitmq:
     image: "rabbitmq:management"
@@ -33,6 +35,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - my_app_network
 
   db:
     image: postgres:latest
