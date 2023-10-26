@@ -3,6 +3,7 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from src import create_app, db
 
+
 from views import (
     ViewRegister,
     ViewLogin,

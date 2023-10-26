@@ -25,6 +25,18 @@ user_schema = UserSchema()
 task_schema = TaskSchema()
 
 
+from celery import Celery
+
+celery_app = Celery(
+    'conversor',
+    broker='pyamqp://guest@localhost//',
+    backend='rpc://',
+)
+
+celery_app.conf.update(
+    result_expires=3600,
+)
+
 class ViewRegister(Resource):
     def post(self):
         email_request = request.json["email"]
@@ -111,6 +123,7 @@ class ViewTasks(Resource):
     
 import multiprocessing
 
+@celery_app.task
 def convert_video_async(filename, target_format, current_user_id):
     video = VideoFileClip(filename)
     original_extension = filename.split('.')[1]
@@ -152,9 +165,7 @@ class ViewUploadAndConvert(Resource):
         filename = secure_filename(file.filename)
         file.save(filename)
 
-       
-        p = multiprocessing.Process(target=convert_video_async, args=(filename, target_format, current_user_id))
-        p.start()
+        convert_video_async(filename, target_format, current_user_id)
 
         return {'message': 'La conversión se ha iniciado de manera asíncrona.'}, 200
 
