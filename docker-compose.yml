@@ -18,6 +18,8 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=miso4204
       - POSTGRES_DB=miso4204db
+    volumes:
+      - /nfs/general:/nfs/general 
 
   celery:
     build: .
