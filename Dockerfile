@@ -10,4 +10,4 @@ ENV PYTHONPATH /src
 
 EXPOSE 5000
 
-CMD ["python", "src/app.py"]
+CMD ["python", "src/api/app.py"]

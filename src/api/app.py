@@ -1,7 +1,8 @@
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
-from src import create_app, db
+from src.api import create_app, db
+
 
 from views import (
     ViewRegister,
