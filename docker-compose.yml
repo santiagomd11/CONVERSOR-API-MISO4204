@@ -7,16 +7,15 @@ services:
     ports:
       - "5000:5000"
     networks:
-      my_app_network:
-        ipv4_address: 10.138.0.2
+      - my_app_network
     depends_on:
       - rabbitmq
     environment:
       - CELERY_BROKER_URL=pyamqp://guest@rabbitmq//
       - CELERY_RESULT_BACKEND=rpc://
-      - POSTGRES_USER:admin
-      - POSTGRES_PASSWORD:miso4204
-      - POSTGRES_DB:miso4204db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=miso4204
+      - POSTGRES_DB=miso4204db
 
   celery:
     build: .
@@ -25,11 +24,10 @@ services:
     depends_on:
       - rabbitmq
     environment: 
-    - CELERY_BROKER_URL=pyamqp://guest:guest@rabbitmq//
-    - CELERY_RESULT_BACKEND=rpc://rabbitmq
+      - CELERY_BROKER_URL=pyamqp://guest:guest@rabbitmq//
+      - CELERY_RESULT_BACKEND=rpc://rabbitmq
     networks:
-      my_app_network:
-        ipv4_address: 10.138.0.3
+      - my_app_network
 
   rabbitmq:
     image: "rabbitmq:management"
@@ -40,8 +38,7 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
     networks:
-      my_app_network:
-        ipv4_address: 10.138.0.2
+      - my_app_network
 
 networks:
   my_app_network:
