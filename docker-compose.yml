@@ -43,5 +43,3 @@ services:
 networks:
   my_app_network:
     driver: bridge
-    ipam:
-      driver: default
