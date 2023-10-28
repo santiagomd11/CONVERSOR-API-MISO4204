@@ -40,7 +40,8 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
     networks:
-      - my_app_network
+      my_app_network:
+        ipv4_address: 10.138.0.2
 
 networks:
   my_app_network:
