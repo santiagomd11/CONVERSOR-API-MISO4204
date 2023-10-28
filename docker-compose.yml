@@ -13,6 +13,8 @@ services:
     environment:
       - CELERY_BROKER_URL=pyamqp://guest@rabbitmq//
       - CELERY_RESULT_BACKEND=rpc://
+      - POSTGRES_HOST=34.71.21.187
+      - POSTGRES_PORT=5432
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=miso4204
       - POSTGRES_DB=miso4204db
