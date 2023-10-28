@@ -7,13 +7,16 @@ services:
     ports:
       - "5000:5000"
     networks:
-      - my_app_network
+      my_app_network:
+        ipv4_address: 10.138.0.2
     depends_on:
-      - db
       - rabbitmq
     environment:
       - CELERY_BROKER_URL=pyamqp://guest@rabbitmq//
       - CELERY_RESULT_BACKEND=rpc://
+      - POSTGRES_USER:admin
+      - POSTGRES_PASSWORD:miso4204
+      - POSTGRES_DB:miso4204db
 
   celery:
     build: .
@@ -25,7 +28,8 @@ services:
     - CELERY_BROKER_URL=pyamqp://guest:guest@rabbitmq//
     - CELERY_RESULT_BACKEND=rpc://rabbitmq
     networks:
-      - my_app_network
+      my_app_network:
+        ipv4_address: 10.138.0.3
 
   rabbitmq:
     image: "rabbitmq:management"
@@ -38,34 +42,8 @@ services:
     networks:
       - my_app_network
 
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: miso4204
-      POSTGRES_DB: miso4204db
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - my_app_network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@uniandes.edu.co
-      PGADMIN_DEFAULT_PASSWORD: miso4204
-    ports:
-      - "8080:80"
-    depends_on:
-      - db
-    networks:
-      - my_app_network
-
 networks:
   my_app_network:
     driver: bridge
-
-volumes:
-  pgdata:
+    ipam:
+      driver: default

@@ -24,6 +24,7 @@ from models import (
 user_schema = UserSchema()
 task_schema = TaskSchema()
 
+NFS_PATH = '/nfs/general'
 
 from celery import Celery
 
@@ -128,9 +129,8 @@ def convert_video_async(filename, target_format, current_user_id):
     video = VideoFileClip(filename)
     original_extension = filename.split('.')[1]
     converted_file_name = filename.split('.')[0] + '_converted' + '.' + target_format.lower()
-    desktop_path = Path.home()
 
-    converted_file_path = desktop_path / converted_file_name
+    converted_file_path = NFS_PATH / converted_file_name
 
     video.write_videofile(str(converted_file_path))
     
@@ -174,8 +174,7 @@ class ViewUploadAndConvert(Resource):
 class ViewDownload(Resource):
     @jwt_required()
     def get(self, file_name):
-        desktop_path = Path.home()
-        converted_file_path = desktop_path / file_name
+        converted_file_path = NFS_PATH / file_name
         try:
             return send_file(converted_file_path, as_attachment=True)
         except Exception as e:
