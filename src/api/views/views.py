@@ -11,6 +11,9 @@ from werkzeug.utils import secure_filename
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import os
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from models import (
     db,
     User,
@@ -24,6 +27,19 @@ from models import (
 user_schema = UserSchema()
 task_schema = TaskSchema()
 
+NFS_PATH = '/nfs/general'
+
+from celery import Celery
+
+celery_app = Celery(
+    'conversor',
+    broker='pyamqp://guest@localhost//',
+    backend='rpc://',
+)
+
+celery_app.conf.update(
+    result_expires=3600,
+)
 
 class ViewRegister(Resource):
     def post(self):
@@ -111,28 +127,33 @@ class ViewTasks(Resource):
     
 import multiprocessing
 
+db_engine = create_engine('postgresql://admin:miso4204@34.71.21.187:5432/miso4204db')
+Session = sessionmaker(bind=db_engine)
+
+@celery_app.task
 def convert_video_async(filename, target_format, current_user_id):
+    
+    session = Session()
     video = VideoFileClip(filename)
     original_extension = filename.split('.')[1]
     converted_file_name = filename.split('.')[0] + '_converted' + '.' + target_format.lower()
-    desktop_path = Path.home()
 
-    converted_file_path = desktop_path / converted_file_name
+    converted_file_path = os.path.join(NFS_PATH, converted_file_name)
 
     video.write_videofile(str(converted_file_path))
     
     timestamp = datetime.now()
     file_status = "processed"
     conversion_task = ConversionFile(file_name=converted_file_name, timestamp=timestamp, status=file_status)
-    db.session.add(conversion_task)
-    db.session.commit()
+    session.add(conversion_task)
+    session.commit()
     
     task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension.lower()),
                 converted_file_extension=FileExtensions(target_format.lower()), is_available=True,
                 original_file_url=filename, converted_file_url=converted_file_name,
                 user_id=current_user_id, conversion_file=conversion_task)
-    db.session.add(task)
-    db.session.commit()
+    session.add(task)
+    session.commit()
     
 class ViewUploadAndConvert(Resource):
     @jwt_required()
@@ -152,7 +173,6 @@ class ViewUploadAndConvert(Resource):
         filename = secure_filename(file.filename)
         file.save(filename)
 
-       
         p = multiprocessing.Process(target=convert_video_async, args=(filename, target_format, current_user_id))
         p.start()
 
@@ -162,8 +182,7 @@ class ViewUploadAndConvert(Resource):
 class ViewDownload(Resource):
     @jwt_required()
     def get(self, file_name):
-        desktop_path = Path.home()
-        converted_file_path = desktop_path / file_name
+        converted_file_path = os.path.join(NFS_PATH, file_name)
         try:
             return send_file(converted_file_path, as_attachment=True)
         except Exception as e:
