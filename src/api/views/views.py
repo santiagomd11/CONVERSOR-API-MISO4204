@@ -11,6 +11,9 @@ from werkzeug.utils import secure_filename
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import os
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from models import (
     db,
     User,
@@ -124,8 +127,13 @@ class ViewTasks(Resource):
     
 import multiprocessing
 
+db_engine = create_engine('postgresql://admin:miso4204@34.71.21.187:5432/miso4204db')
+Session = sessionmaker(bind=db_engine)
+
 @celery_app.task
 def convert_video_async(filename, target_format, current_user_id):
+    
+    session = Session()
     video = VideoFileClip(filename)
     original_extension = filename.split('.')[1]
     converted_file_name = filename.split('.')[0] + '_converted' + '.' + target_format.lower()
@@ -137,15 +145,15 @@ def convert_video_async(filename, target_format, current_user_id):
     timestamp = datetime.now()
     file_status = "processed"
     conversion_task = ConversionFile(file_name=converted_file_name, timestamp=timestamp, status=file_status)
-    db.session.add(conversion_task)
-    db.session.commit()
+    session.add(conversion_task)
+    session.commit()
     
     task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension.lower()),
                 converted_file_extension=FileExtensions(target_format.lower()), is_available=True,
                 original_file_url=filename, converted_file_url=converted_file_name,
                 user_id=current_user_id, conversion_file=conversion_task)
-    db.session.add(task)
-    db.session.commit()
+    session.add(task)
+    session.commit()
     
 class ViewUploadAndConvert(Resource):
     @jwt_required()
