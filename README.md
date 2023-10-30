@@ -27,3 +27,23 @@
 
 * user: ```admin```
 * password: ```miso4204```
+
+## Considerations to deploy API and batch on gcp:
+
+1. Install docker and docker compose on the vm: 
+    ```bash
+     sudo apt-get update
+    ```
+    ```bash
+     sudo apt-get install -y docker.io
+    ```
+    ```bash
+     sudo apt-get install docker-compose
+    ```
+2. Map the VM nfs folder for storage: 
+    ```bash
+     sudo mount 10.138.0.4:/var/nfs/general /nfs/general
+    ```
+    ```bash
+     sudo mount 10.138.0.4:/home /nfs/home
+    ```
