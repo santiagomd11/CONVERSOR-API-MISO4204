@@ -13,6 +13,7 @@ import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import requests
 
 from models import (
     db,
@@ -20,26 +21,13 @@ from models import (
     UserSchema,
     Task,
     TaskSchema,
-    FileExtensions,
-    ConversionFile
+    FileExtensions
 )
 
 user_schema = UserSchema()
 task_schema = TaskSchema()
 
 NFS_PATH = '/nfs/general'
-
-from celery import Celery
-
-celery_app = Celery(
-    'conversor',
-    broker='pyamqp://guest@localhost//',
-    backend='rpc://',
-)
-
-celery_app.conf.update(
-    result_expires=3600,
-)
 
 class ViewRegister(Resource):
     def post(self):
@@ -124,60 +112,39 @@ class ViewTasks(Resource):
         current_user_id = get_jwt_identity() 
         tasks = Task.query.filter_by(user_id=current_user_id).all()
         return task_schema.dump(tasks, many=True)
-    
-import multiprocessing
 
-db_engine = create_engine('postgresql://admin:miso4204@34.71.21.187:5432/miso4204db')
-Session = sessionmaker(bind=db_engine)
-
-@celery_app.task
-def convert_video_async(filename, target_format, current_user_id):
-    
-    session = Session()
-    video = VideoFileClip(filename)
-    original_extension = filename.split('.')[1]
-    converted_file_name = filename.split('.')[0] + '_converted' + '.' + target_format.lower()
-
-    converted_file_path = os.path.join(NFS_PATH, converted_file_name)
-
-    video.write_videofile(str(converted_file_path))
-    
-    timestamp = datetime.now()
-    file_status = "processed"
-    conversion_task = ConversionFile(file_name=converted_file_name, timestamp=timestamp, status=file_status)
-    session.add(conversion_task)
-    session.commit()
-    
-    task = Task(original_file_name=filename, original_file_extension=FileExtensions(original_extension.lower()),
-                converted_file_extension=FileExtensions(target_format.lower()), is_available=True,
-                original_file_url=filename, converted_file_url=converted_file_name,
-                user_id=current_user_id, conversion_file=conversion_task)
-    session.add(task)
-    session.commit()
-    
 class ViewUploadAndConvert(Resource):
     @jwt_required()
-    def get(self):
-        auth_token = request.headers.get('Authorization')
-        current_user_id = get_jwt_identity() 
-        if not auth_token:
-            return {'message': 'Token de autenticación inválido'}, 401 
-        
+    def post(self):
         file = request.files['file']
         target_format = request.form['target_format']
-        
+
         if target_format.lower() not in [e.value for e in FileExtensions]:
-            return {'message': 'Formato de destino no admitido'}, 400 
-        
-        
+            return {'message': 'Unsupported target format'}, 400 
+
         filename = secure_filename(file.filename)
-        file.save(filename)
+        file_path = os.path.join(NFS_PATH, filename)
+        file.save(file_path)
+        
+        data = {
+            'target_format': target_format,
+            'current_user_id': get_jwt_identity()
+        }
 
-        p = multiprocessing.Process(target=convert_video_async, args=(filename, target_format, current_user_id))
-        p.start()
+        files = {
+            'file': (filename, open(file_path, 'rb'))
+        }
 
-        return {'message': 'La conversión se ha iniciado de manera asíncrona.'}, 200
+        conversion_api_url = 'http://batch-api:5005/convert-file'
 
+        response = requests.post(conversion_api_url, files=files, data=data)
+
+        files['file'][1].close()
+
+        if response.status_code == 202:
+            return {'message': 'la conversion ha empezado de manera asicronica'}, 202
+        else:
+            return response.json(), response.status_code
 
 class ViewDownload(Resource):
     @jwt_required()

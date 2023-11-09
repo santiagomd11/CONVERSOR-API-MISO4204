@@ -15,7 +15,7 @@ from views import (
 
 
 
-app = create_app('conversor')
+app = create_app('conversor-api')
 
 app_context = app.app_context()
 app_context.push()
