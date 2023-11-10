@@ -117,7 +117,8 @@ class ViewUploadAndConvert(Resource):
     @jwt_required()
     def post(self):
         file = request.files['file']
-        target_format = request.form['target_format']
+        # target_format = request.form['target_format']
+        target_format = request.args.get('target_format')
 
         if target_format.lower() not in [e.value for e in FileExtensions]:
             return {'message': 'Unsupported target format'}, 400 
