@@ -6,41 +6,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
-    networks:
-      - my_app_network
-    depends_on:
-      - db
+    environment: 
+      - CELERY_BROKER_URL=pyamqp://guest:guest@rabbitmq//
+      - CELERY_RESULT_BACKEND=rpc://rabbitmq
+      - POSTGRES_HOST=34.83.179.230
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=miso4204
+      - POSTGRES_DB=miso4204db
+      - BATCH_IP=10.138.0.3
+      - BATCH_PORT=5005
     volumes:
     - /nfs/general:/nfs/general 
-
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: miso4204
-      POSTGRES_DB: miso4204db
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - my_app_network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@uniandes.edu.co
-      PGADMIN_DEFAULT_PASSWORD: miso4204
-    ports:
-      - "8080:80"
-    depends_on:
-      - db
-    networks:
-      - my_app_network
-
-networks:
-  my_app_network:
-    external: true
-
-volumes:
-  pgdata:

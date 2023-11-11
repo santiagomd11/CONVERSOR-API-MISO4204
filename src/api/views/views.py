@@ -28,6 +28,8 @@ user_schema = UserSchema()
 task_schema = TaskSchema()
 
 NFS_PATH = '/nfs/general'
+BATCH_IP = os.environ.get('BATCH_IP')
+BATCH_PORT = os.environ.get('BATCH_PORT')
 
 class ViewRegister(Resource):
     def post(self):
@@ -136,7 +138,7 @@ class ViewUploadAndConvert(Resource):
             'file': (filename, open(file_path, 'rb'))
         }
 
-        conversion_api_url = 'http://batch-api:5005/convert-file'
+        conversion_api_url = f'http://{BATCH_IP}:{BATCH_PORT}/convert-file'
 
         response = requests.post(conversion_api_url, files=files, data=data)
 
