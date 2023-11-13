@@ -15,7 +15,7 @@ from views import (
 
 
 
-app = create_app('conversor')
+app = create_app('conversor-api')
 
 app_context = app.app_context()
 app_context.push()
@@ -24,6 +24,11 @@ db.create_all()
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 api = Api(app)
+
+@app.route('/health')
+def health_check():
+    return 'OK', 200
+
 api.add_resource(ViewRegister, "/user-register")
 api.add_resource(ViewLogin, "/login")
 api.add_resource(ViewTask, "/task/<int:id_task>")
