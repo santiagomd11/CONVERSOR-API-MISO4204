@@ -10,10 +10,13 @@ from moviepy.editor import *
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import os
+import tempfile
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import requests
+
+from google.cloud import storage
 
 from models import (
     db,
@@ -115,6 +118,11 @@ class ViewTasks(Resource):
         tasks = Task.query.filter_by(user_id=current_user_id).all()
         return task_schema.dump(tasks, many=True)
 
+
+GCP_BUCKET_NAME = 'conversor-bucket'
+storage_client = storage.Client()
+bucket = storage_client.bucket(GCP_BUCKET_NAME)
+
 class ViewUploadAndConvert(Resource):
     @jwt_required()
     def post(self):
@@ -126,23 +134,17 @@ class ViewUploadAndConvert(Resource):
             return {'message': 'Unsupported target format'}, 400 
 
         filename = secure_filename(file.filename)
-        file_path = os.path.join(NFS_PATH, filename)
-        file.save(file_path)
-        
+        blob = bucket.blob(f'videos/{filename}')
+
+        blob.upload_from_file(file)
+
         data = {
             'target_format': target_format,
             'current_user_id': get_jwt_identity()
         }
 
-        files = {
-            'file': (filename, open(file_path, 'rb'))
-        }
-
         conversion_api_url = f'http://{BATCH_IP}:{BATCH_PORT}/convert-file'
-
-        response = requests.post(conversion_api_url, files=files, data=data)
-
-        files['file'][1].close()
+        response = requests.post(conversion_api_url, data=data, files={'file': (filename, file)})
 
         if response.status_code == 202:
             return {'message': 'la conversion ha empezado de manera asicronica'}, 202
@@ -152,8 +154,12 @@ class ViewUploadAndConvert(Resource):
 class ViewDownload(Resource):
     @jwt_required()
     def get(self, file_name):
-        converted_file_path = os.path.join(NFS_PATH, file_name)
-        try:
-            return send_file(converted_file_path, as_attachment=True)
-        except Exception as e:
-            return {'message': f'Error al obtener el archivo: {e}'}, 500
+        secure_file_name = secure_filename(file_name)
+        blob = bucket.blob(f'videos/{secure_file_name}')
+
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            blob.download_to_filename(temp_file.name)
+            try:
+                return send_file(temp_file.name, attachment_filename=secure_file_name, as_attachment=True)
+            except Exception as e:
+                return {'message': f'Error al obtener el archivo: {e}'}, 500
