@@ -139,7 +139,7 @@ class ViewUploadAndConvert(Resource):
 
         blob.upload_from_file(file)
 
-        publish_to_pubsub(filename, target_format, get_jwt_identity)
+        publish_to_pubsub(filename, target_format, get_jwt_identity())
 
         return {'message': 'la conversion ha empezado de manera asicronica'}, 202
 
