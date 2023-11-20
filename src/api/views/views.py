@@ -17,6 +17,7 @@ from sqlalchemy.orm import sessionmaker
 import requests
 
 from google.cloud import storage
+from src.utils.pubsub import publish_to_pubsub
 
 from models import (
     db,
@@ -138,18 +139,9 @@ class ViewUploadAndConvert(Resource):
 
         blob.upload_from_file(file)
 
-        data = {
-            'target_format': target_format,
-            'current_user_id': get_jwt_identity()
-        }
+        publish_to_pubsub(filename, target_format, get_jwt_identity())
 
-        conversion_api_url = f'http://{BATCH_IP}:{BATCH_PORT}/convert-file'
-        response = requests.post(conversion_api_url, data=data, files={'file': (filename, file)})
-
-        if response.status_code == 202:
-            return {'message': 'la conversion ha empezado de manera asicronica'}, 202
-        else:
-            return response.json(), response.status_code
+        return {'message': 'la conversion ha empezado de manera asicronica'}, 202
 
 class ViewDownload(Resource):
     @jwt_required()
