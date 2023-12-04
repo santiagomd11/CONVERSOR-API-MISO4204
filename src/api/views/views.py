@@ -31,10 +31,6 @@ from models import (
 user_schema = UserSchema()
 task_schema = TaskSchema()
 
-NFS_PATH = '/nfs/general'
-BATCH_IP = os.environ.get('BATCH_IP')
-BATCH_PORT = os.environ.get('BATCH_PORT')
-
 class ViewRegister(Resource):
     def post(self):
         email_request = request.json["email"]
@@ -128,7 +124,6 @@ class ViewUploadAndConvert(Resource):
     @jwt_required()
     def post(self):
         file = request.files['file']
-        # target_format = request.form['target_format']
         target_format = request.args.get('target_format')
 
         if target_format.lower() not in [e.value for e in FileExtensions]:
